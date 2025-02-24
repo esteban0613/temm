@@ -10,7 +10,7 @@
 
     <!-- Styles -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.2/css/bootstrap-select.min.css">
-    <link href="{{ asset('css/style.css?v=3') }}" rel="stylesheet">
+    <link href="{{ asset('css/style.css?v=4') }}" rel="stylesheet">
     <link href="{{ asset('css/dataTables.min.css') }}" rel="stylesheet">
     <link href="{{ asset('css/daterangepicker.css') }}" rel="stylesheet">
     <link href="{{ asset('css/pnotify.custom.min.css') }}" rel="stylesheet">

@@ -67,12 +67,12 @@ class TicketController extends Controller
         if($request->schedule==3){
             $dateRange = explode(" - ", $request->range);
             $ticket->date_end = new \Carbon\Carbon($dateRange[1]);
-            $ticket->name = $request->name;
-            $ticket->email = $request->email;
-            $ticket->phone = $request->movil;
-            $ticket->price = $request->price;
             $ticket->hour = new \Carbon\Carbon($dateRange[0]);
+            $ticket->price = $request->price;
         }
+        $ticket->name = $request->name;
+        $ticket->email = $request->email;
+        $ticket->phone = $request->movil;
         $ticket->parking_id = Auth::user()->parking_id;
         $ticket->partner_id = Auth::user()->partner_id;
         $ticket->drawer = $request->drawer;
@@ -270,7 +270,7 @@ class TicketController extends Controller
         //
     }
 
-    public function precio($tiempo, $tipo, $schedule, $convenio = null)
+    public function precio($tiempo, $tipo, $schedule, $convenio = null, $start = null)
     {
         $horas = $tiempo->format("%H");
         $horas2 = $tiempo->format("%H");
@@ -301,6 +301,21 @@ class TicketController extends Controller
                     $parking->day_van_price = $convenio->day_van_price ?? $parking->day_van_price;
                 }
             }
+        }
+        if(Auth::user()->parking_id == 1){
+            $now = new Datetime('now');
+            $startTime = new Datetime($start);
+            $rango = $now->format("H");
+            $rangoAux = $startTime->format("H");
+            $aditional = $rango < 6 || $rango >= 18 ? 1 : 0;
+            $aditionalAux = $rangoAux < 6 || $rangoAux >= 18 ? 1 : 0;
+            $periods = ($aditional == $aditionalAux ? 1 : 2);
+            $dias = intval($horas/12) > 0 ? (intval($horas/12) + ($aditional == $aditionalAux ? 1 : -1)) : 0;
+            $noches = intval($horas/12) > 0 ? max(intval(intval($horas/12)/2),1) : (($aditional || $aditionalAux)? 1:0);
+            
+
+            return ( $parking->day_cars_price * ($periods + $dias)) + ( $noches *1000 );
+            return (((intval($horas/12))+(($horas%12 > 0 ? 1:0)) + (($rango < 6 ? $rango+24 : $rango) - ($horas%24) < 18 ? 1 : 0) )*$parking->day_cars_price)+((intval($horas / 24)) * 1000)+ ( $aditional * 1000 );
         }
         if(Auth::user()->parking_id == 15){
             $schedule=4;
@@ -396,7 +411,7 @@ class TicketController extends Controller
         $ticketss= Ticket::select(['plate'])->where('parking_id',Auth::user()->parking_id)->where('status','<>',"3")->where('plate',$ticket->plate)->where('date_end','>=',$now2)->orderBy('ticket_id','desc')->get();
 
         if($ticket->schedule != 3 || empty($ticket->price))
-            $ticket->price = $this->precio($interval,$ticket->type, $ticket->schedule, $ticket->convenio_id);
+            $ticket->price = $this->precio($interval,$ticket->type, $ticket->schedule, $ticket->convenio_id, $ticket->hour);
         if($ticketss->count() > 0 && $ticket->schedule != 3)
             $ticket->price =0;
         $ticket->partner_id = Auth::user()->partner_id;
@@ -527,7 +542,7 @@ class TicketController extends Controller
             ->editColumn('price', function ($tickets) {
                 $now = new Datetime('now');
                 $interval = date_diff(new DateTime("".$tickets->hour),$now);
-                return (isset( $tickets->price)?  format_money($tickets->price):( "*".format_money($this->precio($interval,$tickets->type, $tickets->schedule, $tickets->convenio_id)))).($tickets->extra?' ('.format_money($tickets->extra).')':'');
+                return (isset( $tickets->price)?  format_money($tickets->price):( "*".format_money($this->precio($interval,$tickets->type, $tickets->schedule, $tickets->convenio_id, $tickets->hour)))).($tickets->extra?' ('.format_money($tickets->extra).')':'');
             })
             ->escapeColumns([])
             ->make(true);

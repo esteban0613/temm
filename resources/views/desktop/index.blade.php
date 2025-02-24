@@ -228,12 +228,14 @@
             getFecha();
             $("#nameIn").css("display","none");
             $("#priceIn").css("display","none");
-            $("#mailIn").css("display","none");
-            $("#movilIn").css("display","none");
+            //$("#mailIn").css("display","none");
+            //$("#movilIn").css("display","none");
             $("#rangeIn").css("display","none");
             $("#schedule").val(1);
             $("#typeIn").val(1);
             $("#plate").val('');
+            $("#emailIn").val('');
+            $("#celularIn").val('');
             $("#id_convenio").val('');
         }
         function openModalInConvenio(){
@@ -257,32 +259,26 @@
         function mensualidad(){
             var schedule = $("#schedule").val();
             if(schedule == 3){
-                $("#nameIn").css("display","block");
+                //$("#nameIn").css("display","block");
                 $("#rangeIn").css("display","block");
                 $("#priceIn").css("display","block");
-                $("#mailIn").css("display","block");
-                $("#movilIn").css("display","block");
+                //$("#mailIn").css("display","block");
+                //$("#movilIn").css("display","block");
             }else{
-                $("#nameIn").css("display","none");
+                //$("#nameIn").css("display","none");
                 $("#priceIn").css("display","none");
-                $("#mailIn").css("display","none");
-                $("#movilIn").css("display","none");
+                //$("#mailIn").css("display","none");
+                //$("#movilIn").css("display","none");
                 $("#rangeIn").css("display","none");
             }
         }
         function mensualidad2(){
             var schedule = $("#schedule_mod").val();
             if(schedule == 3){
-                $("#nameIn_mod").css("display","block");
                 $("#rangeIn_mod").css("display","block");
                 $("#priceIn_mod").css("display","block");
-                $("#mailIn_mod").css("display","block");
-                $("#movilIn_mod").css("display","block");
             }else{
-                $("#nameIn_mod").css("display","none");
                 $("#priceIn_mod").css("display","none");
-                $("#mailIn_mod").css("display","none");
-                $("#movilIn_mod").css("display","none");
                 $("#rangeIn_mod").css("display","none");
             }
         }
